@@ -42,7 +42,7 @@ Skript_Arr* skript_load()
     if (count > 0)
     {
         arr->skript = (Skript_Node*)(arr +1);
-        fread(&arr->skript, sizeof(Skript_Node), count, fp);
+        fread(arr->skript, sizeof(Skript_Node), count, fp);
         fclose(fp);
     }
     else
@@ -51,7 +51,31 @@ Skript_Arr* skript_load()
     return arr;
 }
 
+void skript_save(Skript_Arr* arr)
+{
+    FILE* fp = fopen(data_file_path, "wb");
+    if (!fp)
+        return;
 
+    fwrite(&arr->count, sizeof(u32), 1, fp);
+
+    if (arr->count)
+        fwrite(arr->skript, sizeof(Skript_Node), arr->count, fp);
+
+    fclose(fp);
+}
+
+#define NO_SKRIPT_FOUND -1
+i32 skript_find(Skript_Arr* arr, const char* alias)
+{
+    for (u32 i = 0; i < arr->count; i++)
+    {
+        if (strcmp(arr->skript[i].alias, alias) == 0)
+            return (i32)i;
+    }
+
+    return NO_SKRIPT_FOUND;
+}
 
 
 i32 main(i32 argc, char* argv[])
