@@ -5,11 +5,12 @@
 #include "assert.h"
 
 
-
+#define ALIAS_LEN_MAX  124
+#define SKRIPT_LEN_MAX 256
 typedef struct
 {
-    char alias[124];
-    char skript[256];
+    char alias[ALIAS_LEN_MAX];
+    char skript[SKRIPT_LEN_MAX];
 } Skript_Node;
 
 typedef struct
@@ -107,11 +108,9 @@ i32 main(i32 argc, char* argv[])
                 Skript_Node new;
                 memset(&new, 0, sizeof(Skript_Arr));
 
-                strncpy(new.alias, alias, sizeof(arr->skript[arr->count].alias) - 1);
+                strncpy(new.alias, alias, ALIAS_LEN_MAX -1);
 
-                strncpy(arr->skript[arr->count].skript,
-                        skript,
-                        sizeof(arr->skript[arr->count].skript) - 1);
+                strncpy(arr->skript[arr->count].skript, skript, SKRIPT_LEN_MAX -1);
 
                 arr->skript[arr->count].alias[123] = '\0';
                 arr->skript[arr->count].skript[255] = '\0';
