@@ -185,7 +185,6 @@ i32 main(i32 argc, char* argv[])
             printf("Alias '%s' not found\n", alias);
         else
             printf("%s\n", arr->skript[idx].skript);
-
     }
 
     // Clean up

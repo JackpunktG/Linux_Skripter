@@ -94,11 +94,6 @@ Output:
 make && ./app
 ```
 
-Useful for shell integration:
-
-```bash
-eval "$(skript -p build)"
-```
 
 ### Remove a script
 
