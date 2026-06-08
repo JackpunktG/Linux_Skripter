@@ -5,6 +5,7 @@
 #include "assert.h"
 
 
+
 typedef struct
 {
     char alias[124];
@@ -89,34 +90,84 @@ i32 main(i32 argc, char* argv[])
     if (is_flag_set(&flags, FLAG_ADD))
     {
         if (flags.unknown_arg_count < 2)
+        {
             printf("Error: missing alias and/or skript\n");
+        }
         else
         {
+            const char* alias  = flags.unknown_arg[0];
+            const char* skript = flags.unknown_arg[1];
 
+            if (skript_find(arr, alias) >= 0)
+            {
+                printf("Alias '%s' already exists\n", alias);
+            }
+            else
+            {
+                Skript_Node new;
+                memset(&new, 0, sizeof(Skript_Arr));
+
+                strncpy(new.alias, alias, sizeof(arr->skript[arr->count].alias) - 1);
+
+                strncpy(arr->skript[arr->count].skript,
+                        skript,
+                        sizeof(arr->skript[arr->count].skript) - 1);
+
+                arr->skript[arr->count].alias[123] = '\0';
+                arr->skript[arr->count].skript[255] = '\0';
+
+                arr->count++;
+
+                skript_save(arr);
+
+                printf("Added '%s'\n", alias);
+            }
         }
     }
     else if (is_flag_set(&flags, FLAG_REMOVE))
     {
-
         if (flags.unknown_arg_count < 1)
+        {
             printf("Error: missing alias\n");
+        }
         else
         {
+            const char* alias = flags.unknown_arg[0];
 
+            i32 idx = skript_find(arr, alias);
+
+            if (idx < 0)
+            {
+                printf("Alias '%s' not found\n", alias);
+            }
+            else
+            {
+
+            }
         }
     }
     else if (is_flag_set(&flags, FLAG_DUMP))
     {
-
-    }
-    else if (is_flag_set(&flags, FLAG_PRINT))
-    {
-        if (flags.unknown_arg_count < 1)
-            printf("Error: missing alias\n");
+        if (arr->count == 0)
+        {
+            printf("No skripts stored\n");
+        }
         else
         {
 
         }
+    }
+    else if (is_flag_set(&flags, FLAG_PRINT))
+    {
+        if (flags.unknown_arg_count < 1)
+        {
+            printf("Error: missing alias\n");
+        }
+        else
+        {
+
+        }
+
     }
 
     // Clean up
