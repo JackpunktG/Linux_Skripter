@@ -177,14 +177,14 @@ i32 main(i32 argc, char* argv[])
     }
     else if (is_flag_set(&flags, FLAG_PRINT))
     {
-        if (flags.unknown_arg_count < 1)
-        {
-            printf("Error: missing alias\n");
-        }
-        else
-        {
+        const char* alias = flags.unknown_arg[0];
 
-        }
+        i32 idx = skript_find(arr, alias);
+
+        if (idx < 0)
+            printf("Alias '%s' not found\n", alias);
+        else
+            printf("%s\n", arr->skript[idx].skript);
 
     }
 
