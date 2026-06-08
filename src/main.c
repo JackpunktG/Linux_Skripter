@@ -53,7 +53,7 @@ Skript_Arr* skript_load()
     return arr;
 }
 
-void skript_save(Skript_Arr* arr)
+void skript_save(Skript_Arr* arr, Skript_Node* new_node)
 {
     FILE* fp = fopen(data_file_path, "wb");
     if (!fp)
@@ -61,8 +61,10 @@ void skript_save(Skript_Arr* arr)
 
     fwrite(&arr->count, sizeof(u32), 1, fp);
 
-    if (arr->count)
+    if (arr->count && !new_node)
         fwrite(arr->skript, sizeof(Skript_Node), arr->count, fp);
+    if (new_node)
+        fwrite(new_node, sizeof(Skript_Node), 1, fp);
 
     fclose(fp);
 }
@@ -109,15 +111,10 @@ i32 main(i32 argc, char* argv[])
                 memset(&new, 0, sizeof(Skript_Arr));
 
                 strncpy(new.alias, alias, ALIAS_LEN_MAX -1);
-
-                strncpy(arr->skript[arr->count].skript, skript, SKRIPT_LEN_MAX -1);
-
-                arr->skript[arr->count].alias[123] = '\0';
-                arr->skript[arr->count].skript[255] = '\0';
+                strncpy(new.skript, skript, SKRIPT_LEN_MAX -1);
 
                 arr->count++;
-
-                skript_save(arr);
+                skript_save(arr, &new);
 
                 printf("Added '%s'\n", alias);
             }
