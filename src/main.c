@@ -73,15 +73,15 @@ void skript_remove(Skript_Arr* arr, const u32 remove_index)
     if (!fp)
         return;
 
-    const u32 count = arr->count -1;
+    const u32 count = arr->count - 1;
     fwrite(&count, sizeof(u32), 1, fp);
 
-    for (u32 i = 0; i < count; ++i)
+    for (u32 i = 0; i < arr->count; ++i)
     {
-        if (remove_index)
+        if (i == remove_index)
             continue;
 
-        fwrite(&arr->skript[i], sizeof(Skript_Node), arr->count, fp);
+        fwrite(&arr->skript[i], sizeof(Skript_Node), 1, fp);
     }
 
     fclose(fp);
@@ -155,7 +155,10 @@ i32 main(i32 argc, char* argv[])
                 printf("Alias '%s' not found\n", alias);
             }
             else
+            {
+                printf("Alias '%s' removed\n", alias);
                 skript_remove(arr, idx);
+            }
         }
     }
     else if (is_flag_set(&flags, FLAG_DUMP))
