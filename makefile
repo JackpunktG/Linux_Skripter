@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -Wall -Wextra -Wpedantic -std=c11 -Ilib
+CFLAGS := -O0 -g -Wall -Wextra -Wpedantic -std=c11 -Ilib
 
 TARGET := out_test
 
