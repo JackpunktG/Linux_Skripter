@@ -9,17 +9,21 @@
    ARG(flag, "trigger_input_string", 'char' for single char trigger input(abbr.) / 0 for not used, *ARG_INFO("flag help page info"))
    the below and examples, replace them with your flags of choice
    ==============================================================*/
-ARG(FLAG_TEST, "--test", ARG_ABBR_NO)
-ARG(FLAG_ONE, "--one", 'o', ARG_INFO(
-        "This is a longer test sentence meant to verify how the program handles\n"
-        "\tindentation, line breaks, and formatted output across multiple lines.\n"
-        "\tIt includes tabs at the beginning of lines,\n"
-        "\tas well as normal text that continues after them.\n"
-        "You should see clear separation between paragraphs,\n"
-        "\tand consistent spacing when alignment is working correctly.\n"
-        "Finally, this last line ends the test string."))
-ARG(FLAG_TWO, "--two", 't')
-ARG(FLAG_THREE, "--three", ARG_ABBR_NO, ARG_INFO("It's the third arg. thats kinda cool :)"))
+ARG(FLAG_ADD, "--add", 'a', ARG_INFO(
+        "to add a new skript\n"
+        "\t-a [alias] [skript]"
+))
+ARG(FLAG_REMOVE, "--remove", 'r', ARG_INFO(
+        "remove a skript\n"
+        "\t-r [alias]"
+))
+ARG(FLAG_DUMP, "--dump", 'd', ARG_INFO(
+        "print out all saved skripts"
+))
+ARG(FLAG_PRINT, "--print", 'p', ARG_INFO(
+        "print out a skript"
+        "\t-p [alias]"
+))
 
 #undef ARG_ABBR_NO
 #undef ARG_INFO

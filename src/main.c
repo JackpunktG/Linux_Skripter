@@ -1,7 +1,14 @@
-#include "stdio.h"
 #include "../lib/easy_args.h"
 #include "../lib/var_types.inc"
 
+
+
+
+typedef struct
+{
+    char alias[124];
+    char skript[256];
+} Skript_Node;
 
 
 i32 main(i32 argc, char* argv[])
@@ -14,6 +21,9 @@ i32 main(i32 argc, char* argv[])
 
     print_args_table();
 
-    if (is_flag_set(&flags, FLAG_TEST))
-    {}
+
 }
+
+
+
+
