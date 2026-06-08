@@ -51,7 +51,6 @@ typedef struct
     uint8_t string_count;
     char short_arg;
     uint16_t info_count;
-    /* 4-byte hole */
     uint8_t* info_data;
 } Arg_Table;
 
