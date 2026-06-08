@@ -22,7 +22,7 @@ typedef struct
 
 Skript_Arr* skript_load();
 
-#define data_file_path "data/data.b"
+#define data_file_path "~/Apps/linux_skripter/data/data.b"
 
 Skript_Arr* skript_load()
 {
