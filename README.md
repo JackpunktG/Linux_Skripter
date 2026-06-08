@@ -48,6 +48,10 @@ make clean
 
 Build the project:
 
+change the file path to the place of our choice:
+```c
+#define data_file_path "data/data.b" // line 25 main.c
+```
 ```bash
 make
 ```
