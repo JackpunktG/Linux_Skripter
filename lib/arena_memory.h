@@ -1,5 +1,6 @@
 #ifndef ARENA_MEMORY
 #define ARENA_MEMORY
+#pragma once
 
 #include <stddef.h>
 #include <stdint.h>
@@ -24,19 +25,15 @@ typedef struct
     size_t defualt_block_size;  // size of new block
     size_t alignment;           //number of bits the Arena should be aligned to
 } Arena;
-/* Initaialize the arena with a default block size and alignment, returns NULL if failed to initialize */
+
 Arena* arena_init(size_t defualt_block_size, size_t alignment);
-/* Destroy the arena and free all associated memory */
 void arena_destroy(Arena* arena);
-/* Allocates memory from the arena. Returns NULL if allocation fails. The out_size_alloc sends back total allocated space, can be NULL if not needed.*/
 void* arena_alloc(Arena* arena, size_t size, size_t* out_size_alloc);
-void arena_reset(Arena* arena); //just restting all the allocated counters to zero and ptr to the start for the blocks
-//to realloc, old_size is needed to add back to free list properly
-void* arena_realloc(Arena* arena, void* old_ptr, size_t new_size, size_t* out_size_alloc);
+
+// void arena_reset(Arena* arena);
+// void* arena_realloc(Arena* arena, void* old_ptr, size_t new_size, size_t* out_size_alloc);
 
 
-//#endif // ARENA_MEMORY_H
-//#ifdef ARENA_MEMORY_IMPLEMENTATION
 #ifdef __linux__
 #include <sys/mman.h>
 #include <sys/syscall.h>
@@ -51,9 +48,10 @@ void* arena_realloc(Arena* arena, void* old_ptr, size_t new_size, size_t* out_si
 #include <stdlib.h>
 #include <string.h>
 #define REQUEST_MEMORY(size) REQUEST_MEMORY(size)
-#define FREE_MEMORY(ptr, size) free(ptr)
+#define FREE_MEMORY(ptr, size) FREE_MEMORY(ptr)
 #endif
-#include <stdio.h>
+#endif // ARENA_MEMORY_H
+#ifdef ARENA_MEMORY_IMPLEMENTATION
 
 
 //static mean its only for internal use, and can't be accidentially assess by somewhere else the same function being declared
@@ -73,7 +71,7 @@ static Arena_Block* arena_add_block(Arena *arena, size_t minimumSize)
     block->memory = (uint8_t*)REQUEST_MEMORY(block_size);
     if(!block->memory)
     {
-        free(block);
+        FREE_MEMORY(block, sizeof(Arena_Block));
         printf("ERROR - could not allocate block memory\n");
         return NULL;
     }
@@ -135,7 +133,7 @@ Arena* arena_init(size_t block_size, size_t alignment)
     // Create first block
     if(!arena_add_block(arena, block_size))
     {
-        free(arena);
+        FREE_MEMORY(arena, sizeof(Arena));
         printf("ERROR - Failed to create first block");
         return NULL;
     }
@@ -200,29 +198,29 @@ void arena_reset(Arena* arena)
     arena->total_allocated = 0;
 }
 
-void* arena_realloc(Arena* arena, void* old_ptr, size_t new_size, size_t* out_size_alloc)
-{
-    if (!arena || !old_ptr || !new_size)
-    {
-        printf("ERROR - paramater are NULL\n");
-        return NULL;
-    }
-
-    //allocate new space
-    void* new_ptr = arena_alloc(arena, new_size, out_size_alloc);
-    if (!new_ptr)
-    {
-        printf("ERROR - arena_realloc failed to allocate new memory\n");
-        return NULL;
-    }
-
-    memcpy(new_ptr, old_ptr, new_size);
-
-    if (out_size_alloc != NULL)
-        *out_size_alloc = new_size;
-
-    return new_ptr;
-}
+// void* arena_realloc(Arena* arena, void* old_ptr, size_t new_size, size_t* out_size_alloc)
+// {
+//     if (!arena || !old_ptr || !new_size)
+//     {
+//         printf("ERROR - paramater are NULL\n");
+//         return NULL;
+//     }
+//
+//     //allocate new space
+//     void* new_ptr = arena_alloc(arena, new_size, out_size_alloc);
+//     if (!new_ptr)
+//     {
+//         printf("ERROR - arena_realloc failed to allocate new memory\n");
+//         return NULL;
+//     }
+//
+//     memcpy(new_ptr, old_ptr, new_size);
+//
+//     if (out_size_alloc != NULL)
+//         *out_size_alloc = new_size;
+//
+//     return new_ptr;
+// }
 
 
 void arena_destroy(Arena* arena)
@@ -232,16 +230,16 @@ void arena_destroy(Arena* arena)
         printf("ERROR - arena is already NULL before the destroy\n");
         return;
     }
-    //free all blocks
+    //FREE_MEMORY all blocks
     Arena_Block* block = arena->first;
     while(block)
     {
         Arena_Block* next = block->next;
-        free(block->memory);
-        free(block);
+        FREE_MEMORY(block->memory, block->size);
+        FREE_MEMORY(block, sizeof(Arena_Block));
         block = next;
     }
 
-    free(arena);
+    FREE_MEMORY(arena, sizeof(Arena));
 }
 #endif // ARENA_MEMORY_IMPLEMENTATION
