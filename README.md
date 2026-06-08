@@ -109,15 +109,6 @@ Removes the stored alias.
 skript -d
 ```
 
-Output:
-
-```text
-build -> make && ./app
-test  -> make test
-run   -> ./app
-```
-
----
 
 ## Commands
 
@@ -157,30 +148,3 @@ skript -d
 ```
 
 ---
-
-## Data Format
-
-The database file is stored as:
-
-```c
-u32 count;
-Skript_Node entries[count];
-```
-
-where:
-
-```c
-typedef struct
-{
-    char alias[124];
-    char skript[256];
-} Skript_Node;
-```
-
-The file is rewritten whenever entries are added or removed.
-
----
-
-## License
-
-MIT
