@@ -69,6 +69,26 @@ void skript_save(Skript_Arr* arr, Skript_Node* new_node)
     fclose(fp);
 }
 
+void skript_remove(Skript_Arr* arr, const u32 remove_index)
+{
+    FILE* fp = fopen(data_file_path, "wb");
+    if (!fp)
+        return;
+
+    const u32 count = arr->count -1;
+    fwrite(&count, sizeof(u32), 1, fp);
+
+    for (u32 i = 0; i < count; ++i)
+    {
+        if (remove_index)
+            continue;
+
+        fwrite(&arr->skript[i], sizeof(Skript_Node), arr->count, fp);
+    }
+
+    fclose(fp);
+}
+
 #define NO_SKRIPT_FOUND -1
 i32 skript_find(Skript_Arr* arr, const char* alias)
 {
@@ -137,9 +157,7 @@ i32 main(i32 argc, char* argv[])
                 printf("Alias '%s' not found\n", alias);
             }
             else
-            {
-
-            }
+                skript_remove(arr, idx);
         }
     }
     else if (is_flag_set(&flags, FLAG_DUMP))
@@ -150,7 +168,10 @@ i32 main(i32 argc, char* argv[])
         }
         else
         {
-
+            for (u32 i = 0; i < arr->count; i++)
+            {
+                printf("%s -> %s\n", arr->skript[i].alias, arr->skript[i].skript);
+            }
         }
     }
     else if (is_flag_set(&flags, FLAG_PRINT))
