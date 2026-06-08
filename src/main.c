@@ -186,7 +186,17 @@ i32 main(i32 argc, char* argv[])
         else
             printf("%s\n", arr->skript[idx].skript);
     }
+    else
+    {
+        const char* alias = flags.unknown_arg[0];
 
+        i32 idx = skript_find(arr, alias);
+
+        if (idx < 0)
+            printf("Alias '%s' not found\n", alias);
+        else
+            system(arr->skript[idx].skript);
+    }
     // Clean up
     arena_destroy(arr->arena);
 
